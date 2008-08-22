@@ -2,9 +2,11 @@ module ActsAsUriNamed
   def acts_as_uri_named options = { }
     field_name = options[:uri_name_field] || :uri_name
     
-    validates_presence_of field_name
-    validates_uniqueness_of field_name, :allow_blank => true, :scope => options[:scope]
-    validates_format_of field_name, :with => /^[a-z0-9][a-z0-9_\-\.%]*$/i, :allow_blank => true
+    if options[:validate] != false
+      validates_presence_of   field_name
+      validates_uniqueness_of field_name, :allow_blank => true, :scope => options[:scope]
+      validates_format_of     field_name, :with => /^[a-z0-9][a-z0-9_\-\.%@]*$/i, :allow_blank => true
+    end
     
     module_eval <<-"end_eval"
       def to_param
@@ -34,7 +36,7 @@ module ActsAsUriNamed
           parent_record = nil
         end
         
-        find_by_uri_name_and_parent_id(uri_name, parent_record)
+        find_by_uri_name_and_#{options[:scope] || 'parent_id'}(uri_name, parent_record)
       end
     end_eval
   end

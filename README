@@ -22,6 +22,10 @@ Article.find('bla-bla-bla') will return the @article.
 The original functionality is still available
 Article.find(@article.id) will return the @article
 
+
+Nested Urls Handling
+====================
+
 If you have a nested units, with your model you can search by
 the full path like
 
@@ -30,11 +34,40 @@ the full path like
 
 Article.find_by_full_uri_name('/bla/asdf') will return @article2
 
+
 And you have a method to compile the full urls
 
 @article1.full_uri_name  -> '/bla'
 @article2.full_uri_name  -> '/bla/asdf'
 
 
+You can specify the scope field for your nested units, which is
+'parent_id' by default.
+
+class Node < ActiveRecord::Base
+  acts_as_uri_named :scope => :node_id
+
+  belongs_to :node
+  has_many :nodes
+end
+
+
+Validation Skipping
+===================
+
+You can skip the plugin's builtin validators if you have some own
+validations in your model which conflicts or duplicates the plugins
+validations.
+
+class User < ActiveRecord::Base
+  acts_as_uri_named :uri_name_field => :login, :validate => false
+
+  validates_presence_of :login ....
+  .....
+end
+
+
+
+--
 Copyright (c) 2008 [Nikolay V. Nemshilov aka St.],
 released under the MIT license
