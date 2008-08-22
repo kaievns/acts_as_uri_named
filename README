@@ -1,0 +1,35 @@
+ActsAsUriNamed
+==============
+
+This plugin does the wrong thing we all do. It makes your model uri-name
+field work as the primary key when you need it. Say for articles, blog
+entries and so ones.
+
+
+Example
+=======
+
+class Article < ActiveRecod::Base
+  acts_as_uri_named
+end
+
+@article = Article.new :uri_name => 'bla-bla-bla'
+
+article_path @article -> '/articles/bla-bla-bla'
+
+Article.find('bla-bla-bla') will return the @article.
+
+The original functionality is still available
+Article.find(@article.id) will return the @article
+
+If you have a nested units, with your model you can search by the full path
+like
+
+@article1 = Article.create :uri_name => 'bla'
+@article2 = Article.create :uri_name => 'asdf', :parent => @article1
+
+Article.find_by_full_uri_name('/bla/asdf') will return @article2
+
+
+Copyright (c) 2008 [Nikolay V. Nemshilov aka St.],
+released under the MIT license
