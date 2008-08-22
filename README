@@ -22,13 +22,18 @@ Article.find('bla-bla-bla') will return the @article.
 The original functionality is still available
 Article.find(@article.id) will return the @article
 
-If you have a nested units, with your model you can search by the full path
-like
+If you have a nested units, with your model you can search by
+the full path like
 
 @article1 = Article.create :uri_name => 'bla'
 @article2 = Article.create :uri_name => 'asdf', :parent => @article1
 
 Article.find_by_full_uri_name('/bla/asdf') will return @article2
+
+And you have a method to compile the full urls
+
+@article1.full_uri_name  -> '/bla'
+@article2.full_uri_name  -> '/bla/asdf'
 
 
 Copyright (c) 2008 [Nikolay V. Nemshilov aka St.],
