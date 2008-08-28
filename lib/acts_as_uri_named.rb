@@ -8,6 +8,19 @@ module ActsAsUriNamed
       validates_format_of     field_name, :with => /^[a-z0-9][a-z0-9_\-\.%@]*$/i, :allow_blank => true
     end
     
+    # converts any string into an uri-compartible name
+    define_method :to_uri_name do |string|
+      ActiveSupport::Multibyte::Handlers::UTF8Handler.normalize(string,:d).split(//u).reject { |e| e.length > 1 
+      }.join.gsub("\n", " ").gsub(/[^a-z0-9\-_ \.]+/, '').squeeze(' ').gsub(/ |\.|_/, '-')
+    end
+    
+    if options[:create_from]
+      # trying to autocreate the uri-name from the specified field
+      before_validation_on_create proc { |record|
+        record[field_name] = record.to_uri_name(record[options[:create_from]]) if record[field_name].blank?
+      }
+    end
+    
     module_eval <<-"end_eval"
       def to_param
         #{field_name}
