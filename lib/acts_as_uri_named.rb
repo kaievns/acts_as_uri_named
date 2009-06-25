@@ -10,7 +10,7 @@ module ActsAsUriNamed
     
     # converts any string into an uri-compartible name
     define_method :to_uri_name do |string|
-      ActiveSupport::Multibyte::Handlers::UTF8Handler.normalize(string,:d).split(//u).reject { |e| e.length > 1 
+      string.mb_chars.normalize(:d)..split(//u).reject { |e| e.length > 1 
       }.join.gsub("\n", " ").gsub(/[^a-z0-9\-_ \.]+/i, '').squeeze(' ').gsub(/ |\.|_/, '-').downcase
     end
     
